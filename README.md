@@ -1,70 +1,70 @@
 # PoE1 Trade Monitor
 
-Path of Exile 1 交易監控工具 — OpenClaw Skill
+Path of Exile 1 Trade Monitoring Tool — OpenClaw Skill
 
-追蹤公開倉庫流（所有公開標籤的即時更新）、查詢通貨交易所行情（chaos/divine 兌換比率）。
+Monitor public stash tabs in real-time (all public tab updates), query currency exchange rates (chaos/divine conversion).
 
-## 功能
+## Features
 
-- **公開倉庫流監控** — 即時追蹤所有公開倉庫標籤的變更
-- **物品搜尋** — 在公開倉庫中搜尋特定物品
-- **通貨交易所** — 查詢 chaos/divine 兌換比率
-- **歷史數據** — 獲取交易所歷史記錄
+- **Public Stash Tab Monitoring** — Real-time tracking of all public stash tab changes
+- **Item Search** — Search for specific items in public stashes
+- **Currency Exchange** — Query chaos/divine exchange rates
+- **Historical Data** — Retrieve exchange history records
 
-## 安裝
+## Installation
 
-將整個 `poe1-trade-monitor` 目錄放入你的 OpenClaw skills 目錄：
+Place the entire `poe1-trade-monitor` directory into your OpenClaw skills directory:
 
 ```
 ~/.qclaw/skills/poe1-trade-monitor/
 ```
 
-或
+or
 
 ```
 ~/.openclaw/workspace/skills/poe1-trade-monitor/
 ```
 
-## ⚠️ 重要：OAuth 應用需要事先申請
+## ⚠️ Important: OAuth Application Must Be Requested First
 
-**無法自助註冊！** 使用本工具前，必須先向 Grinding Gear Games 申請 OAuth 應用。
+**Self-registration is not available!** Before using this tool, you must request an OAuth application from Grinding Gear Games.
 
-### 申請流程
+### Application Process
 
-1. **發送郵件至** [oauth@grindinggear.com](mailto:oauth@grindinggear.com?subject=OAuth%20Application)
+1. **Send email to** [oauth@grindinggear.com](mailto:oauth@grindinggear.com?subject=OAuth%20Application)
 
-2. **郵件內容範例：**
+2. **Email Template:**
    ```
    Subject: OAuth Application
    
-   Account Name: <你的 PoE 帳號名稱（含四位數字）>
-   Application Name: <應用名稱>
+   Account Name: <Your PoE account name (with 4-digit discriminator)>
+   Application Name: <Application name>
    Client Type: Confidential Client
    Grant Types: client_credentials
    Scopes: service:psapi, service:cxapi
    Redirect URI: https://localhost/callback
-   Purpose: 監控公開倉庫和查詢通貨交易所
+   Purpose: Monitor public stashes and query currency exchange
    ```
 
-3. **等待審核** — GGG 會在收到申請後審核（可能需要數週）
+3. **Wait for Review** — GGG will review your application (may take several weeks)
 
-⚠️ **注意：** 低質量或 LLM 生成的申請會被直接拒絕。請先詳閱官方文檔後再申請。
+⚠️ **Note:** Low-effort or LLM-generated applications will be rejected immediately. Please read the official documentation before applying.
 
 ---
 
-## OAuth 認證設置
+## OAuth Authentication Setup
 
-⚠️ **所有功能都需要 OAuth 認證**  
-POESESSID (Cookie) 無法用於交易監控功能。
+⚠️ **All features require OAuth authentication**  
+POESESSID (Cookie) cannot be used for trade monitoring features.
 
-### 前置條件
+### Prerequisites
 
-- ✅ 已向 GGG 申請並獲得 OAuth 應用批准
-- ✅ 已收到 Client ID 和 Client Secret
+- ✅ OAuth application has been requested and approved by GGG
+- ✅ You have received Client ID and Client Secret
 
-### 快速設置
+### Quick Setup
 
-1. **獲取 Access Token**
+1. **Get Access Token**
    ```bash
    curl -X POST https://www.pathofexile.com/oauth/token \
      -H "Content-Type: application/x-www-form-urlencoded" \
@@ -74,106 +74,111 @@ POESESSID (Cookie) 無法用於交易監控功能。
      -d "scope=service:psapi service:cxapi"
    ```
 
-2. **配置環境變數**
+2. **Set Environment Variable**
    ```bash
    export POETOKEN="<your_access_token>"
    ```
 
-### 所需 Scopes
+### Required Scopes
 
-| Scope | 說明 |
-|-------|------|
-| `service:psapi` | 公開倉庫 API |
-| `service:cxapi` | 通貨交易所 API |
+| Scope | Description |
+|-------|-------------|
+| `service:psapi` | Public Stash API |
+| `service:cxapi` | Currency Exchange API |
 
-### Token 特性
+### Token Characteristics
 
-- **不會過期**（`expires_in: null`）
-- 可隨時在 https://www.pathofexile.com/my-account/applications 撤銷
+- **Does not expire** (`expires_in: null`)
+- Can be revoked anytime at https://www.pathofexile.com/my-account/applications
 
-## 使用方式
+## Usage
 
-### 方法 1：環境變數
+### Method 1: Environment Variable
 
 ```bash
 export POETOKEN="<your_oauth_token>"
 python3 scripts/trade_api.py public-stashes
 ```
 
-### 方法 2：命令行參數
+### Method 2: Command Line Parameter
 
 ```bash
 python3 scripts/trade_api.py --token=<POETOKEN> public-stashes
 ```
 
-## 命令範例
+## Command Examples
 
-### 監控公開倉庫流
+### Monitor Public Stash Stream
 
 ```bash
 python3 scripts/trade_api.py --token=<TOKEN> public-stashes
 ```
 
-輸出範例：
+Output example:
 ```
-[上架]  帳號: xyz  |  標籤: 「My Maps」  |  聯盟: Settlers  |  物品數: 24
-  → Storm's Edge | Unique | iLvl: 84 | 未鑑定
+[上架]  Account: xyz  |  Tab: 「My Maps」  |  League: Settlers  |  Items: 24
+  → Storm's Edge | Unique | iLvl: 84 | Unidentified
   → Vaal Regret  ×10
 
 next_change_id: abc123
-（用 --id abc123 繼續）
+(Use --id abc123 to continue)
 ```
 
-### 搜尋特定物品
+### Search for Specific Items
 
 ```bash
 python3 scripts/trade_api.py --token=<TOKEN> find "Headhunter" --league Settlers --pages 5
 ```
 
-### 查詢通貨交易所
+### Query Currency Exchange
 
 ```bash
 python3 scripts/trade_api.py --token=<TOKEN> exchange
 ```
 
-輸出範例：
+Output example:
 ```
-通貨交易所
+Currency Exchange
 
 chaos ↔ divine
-  交易量: 124,521 chaos
+  Volume: 124,521 chaos
   1 divine = 140~155 chaos
 ```
 
-### 查詢歷史數據
+### Query Historical Data
 
 ```bash
 python3 scripts/trade_api.py --token=<TOKEN> exchange-history 1709817600
 ```
 
-## API 文檔
+## API Documentation
 
-| 文檔 | 說明 |
-|------|------|
-| `references/oauth-authorization.md` | OAuth 2.1 授權完整說明（含申請流程、政策要求） |
-| `references/api-types.md` | API 類型定義 |
-| [官方文檔](https://www.pathofexile.com/developer/docs/authorization) | PoE Developer Docs |
+| Document | Description |
+|----------|-------------|
+| `references/oauth-authorization.md` | Complete OAuth 2.1 authorization guide (includes application process, policy requirements) |
+| `references/api-types.md` | API type definitions |
+| [Official Docs](https://www.pathofexile.com/developer/docs/authorization) | PoE Developer Docs |
 
-## 注意事項
+## Notes
 
-- 公開倉庫 API 有 5 分鐘延遲
-- 使用 `next_change_id` 持續輪詢以追蹤倉庫變化
-- **必須使用 OAuth token 才能運作**
+- Public stash API has 5-minute delay
+- Use `next_change_id` to continuously poll for stash changes
+- **OAuth token is required to operate**
 
-## 系統需求
+## System Requirements
 
 - Python 3.6+
-- 無額外依賴（使用標準庫）
+- No additional dependencies (uses standard library)
 
 ## License
 
 MIT License
 
-## 作者
+## Author
 
 OpenClaw Community
+
+---
+
+**Available in other languages:**
+- [繁體中文 (Traditional Chinese)](README.zh-TW.md)
