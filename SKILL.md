@@ -24,6 +24,32 @@ export POETOKEN="<your_oauth_token>"
 ⚠️ **所有功能都需要 OAuth 認證**
 POESESSID (Cookie) 無法用於交易監控功能，請使用 OAuth token。
 
+⚠️ **OAuth 應用需要向 GGG 申請**
+無法自助註冊，需發送郵件至 oauth@grindinggear.com 申請。詳見下方說明。
+
+---
+
+### 申請 OAuth 應用
+
+**發送郵件至：** [oauth@grindinggear.com](mailto:oauth@grindinggear.com?subject=OAuth%20Application)
+
+**郵件模板：**
+```
+Subject: OAuth Application
+
+Account Name: <你的 PoE 帳號名稱（含四位數字）>
+Application Name: <應用名稱>
+Client Type: Confidential Client
+Grant Types: client_credentials
+Scopes: service:psapi, service:cxapi
+Redirect URI: https://localhost/callback
+Purpose: 監控公開倉庫和查詢通貨交易所
+```
+
+⚠️ **低質量或 LLM 生成的申請會被直接拒絕！** 請詳閱官方文檔後再申請。
+
+---
+
 ### 獲取 OAuth Token（Client Credentials 流程）
 
 本工具使用 **Client Credentials Grant**，適用於服務類 API（公開倉庫、通貨交易所）。

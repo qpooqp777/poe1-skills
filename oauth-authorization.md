@@ -6,6 +6,112 @@
 
 Path of Exile 的開發者 API 使用 OAuth 2.1 框架進行授權。幾乎所有 API 都需要授權才能使用。
 
+---
+
+## ⚠️ 重要：OAuth 應用申請流程
+
+**註冊 OAuth 應用需要向 GGG 申請，無法自助註冊！**
+
+### 申請方式
+
+發送郵件至 **[oauth@grindinggear.com](mailto:oauth@grindinggear.com?subject=OAuth%20Application)**
+
+### 申請郵件模板
+
+```
+Subject: OAuth Application
+
+Hi GGG Team,
+
+I would like to request OAuth access for my application.
+
+Account Name: <你的 PoE 帳號名稱（含四位數字）>
+Application Name: <應用名稱>
+
+Client Type: Confidential Client
+Grant Types: client_credentials
+Scopes Required:
+- service:psapi (Public Stash API) - 用於監控公開倉庫
+- service:cxapi (Currency Exchange API) - 用於查詢通貨交易所
+
+Redirect URI: https://localhost/callback
+
+Purpose: 
+<簡短說明你的應用用途>
+
+Thank you.
+```
+
+### 申請注意事項
+
+⚠️ **低質量或 LLM 生成的申請會被直接拒絕！**
+
+- 必須已閱讀並理解官方文檔
+- 必須清楚說明每個 scope 的用途
+- 回覆時間可能較長（特別是聯盟開始時）
+- 這是低優先級請求
+
+### 申請所需資訊
+
+| 項目 | 說明 |
+|------|------|
+| PoE 帳號名稱 | 包含四位數字識別碼 |
+| 應用名稱 | 你的應用/工具名稱 |
+| 客戶端類型 | Confidential 或 Public |
+| Grant Types | authorization_code / client_credentials |
+| Scopes | 需要的權限範圍及原因 |
+| Redirect URI | HTTPS URL（Confidential）或 localhost（Public） |
+
+---
+
+## API 政策與第三方要求
+
+> 來源：https://www.pathofexile.com/developer/docs/index#policy
+
+### 應用類型規範
+
+| 類型 | 規範 |
+|------|------|
+| **網站/Web Apps** | ✅ 推薦 — 對用戶風險最低，憑證安全 |
+| **獨立執行檔** | ⚠️ 允許但需使用 Public OAuth Client |
+| **與遊戲互動的程式** | ❌ 嚴格禁止 — 違反 ToS，帳號會被終止 |
+
+### 必須遵守的規則
+
+#### 1. OAuth 憑證安全
+- ❌ 不要分享你的憑證給任何人
+- ❌ 不要在代碼中包含應用密鑰
+- ❌ 不要在分發的二進制文件中嵌入密鑰
+- ✅ 每個產品註冊一個應用
+
+#### 2. User Agent 格式
+```
+User-Agent: OAuth {$clientId}/{$version} (contact: {$contact}) ...
+```
+
+範例：
+```
+User-Agent: OAuth mypoeapp/1.0.0 (contact: mypoeapp@gmail.com)
+```
+
+#### 3. 第三方聲明
+所有公開應用必須在顯眼位置顯示：
+```
+This product isn't affiliated with or endorsed by Grinding Gear Games in any way.
+```
+
+#### 4. 速率限制
+- 遵守 Response Headers 中的速率限制
+- 頻繁超過限制會導致應用權限被撤銷
+- 查看 `X-Rate-Limit-*` Headers 了解當前狀態
+
+### 違規後果
+
+- 應用訪問權限被撤銷
+- 帳號被終止（嚴重違規）
+
+---
+
 ## OAuth 伺服器端點
 
 | 端點 | 用途 |
