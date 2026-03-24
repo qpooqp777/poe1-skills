@@ -25,19 +25,46 @@ Path of Exile 1 交易監控工具 — OpenClaw Skill
 ~/.openclaw/workspace/skills/poe1-trade-monitor/
 ```
 
+## ⚠️ 重要：OAuth 應用需要事先申請
+
+**無法自助註冊！** 使用本工具前，必須先向 Grinding Gear Games 申請 OAuth 應用。
+
+### 申請流程
+
+1. **發送郵件至** [oauth@grindinggear.com](mailto:oauth@grindinggear.com?subject=OAuth%20Application)
+
+2. **郵件內容範例：**
+   ```
+   Subject: OAuth Application
+   
+   Account Name: <你的 PoE 帳號名稱（含四位數字）>
+   Application Name: <應用名稱>
+   Client Type: Confidential Client
+   Grant Types: client_credentials
+   Scopes: service:psapi, service:cxapi
+   Redirect URI: https://localhost/callback
+   Purpose: 監控公開倉庫和查詢通貨交易所
+   ```
+
+3. **等待審核** — GGG 會在收到申請後審核（可能需要數週）
+
+⚠️ **注意：** 低質量或 LLM 生成的申請會被直接拒絕。請先詳閱官方文檔後再申請。
+
+---
+
 ## OAuth 認證設置
 
 ⚠️ **所有功能都需要 OAuth 認證**  
 POESESSID (Cookie) 無法用於交易監控功能。
 
+### 前置條件
+
+- ✅ 已向 GGG 申請並獲得 OAuth 應用批准
+- ✅ 已收到 Client ID 和 Client Secret
+
 ### 快速設置
 
-1. **註冊 OAuth 應用**
-   - 訪問 https://www.pathofexile.com/developer/docs/applications
-   - 創建新的 OAuth 應用（Redirect URI 可填任意 HTTPS URL）
-   - 記下 Client ID 和 Client Secret
-
-2. **獲取 Access Token**
+1. **獲取 Access Token**
    ```bash
    curl -X POST https://www.pathofexile.com/oauth/token \
      -H "Content-Type: application/x-www-form-urlencoded" \
@@ -47,7 +74,7 @@ POESESSID (Cookie) 無法用於交易監控功能。
      -d "scope=service:psapi service:cxapi"
    ```
 
-3. **配置環境變數**
+2. **配置環境變數**
    ```bash
    export POETOKEN="<your_access_token>"
    ```
@@ -126,9 +153,11 @@ python3 scripts/trade_api.py --token=<TOKEN> exchange-history 1709817600
 
 ## API 文檔
 
-- **OAuth 2.1 授權** — `references/oauth-authorization.md`
-- **API 類型定義** — `references/api-types.md`
-- **官方文檔** — https://www.pathofexile.com/developer/docs/authorization
+| 文檔 | 說明 |
+|------|------|
+| `references/oauth-authorization.md` | OAuth 2.1 授權完整說明（含申請流程、政策要求） |
+| `references/api-types.md` | API 類型定義 |
+| [官方文檔](https://www.pathofexile.com/developer/docs/authorization) | PoE Developer Docs |
 
 ## 注意事項
 
